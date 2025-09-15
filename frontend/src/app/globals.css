@@ -1,0 +1,96 @@
+@import "tailwindcss";
+/* app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Add Work Sans as CSS variable */
+  --font-work-sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* Update the default sans font to Work Sans */
+  --font-sans: var(--font-work-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Apply Work Sans globally */
+* {
+  font-family: var(--font-work-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-work-sans);
+}
+
+/* Ensure headings use Work Sans */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-work-sans);
+}
+
+/* Ensure all text elements use Work Sans */
+p, span, div, a, button, input, textarea, select, label {
+  font-family: var(--font-work-sans);
+}
+
+/* Override Tailwind's default font classes */
+.font-sans {
+  font-family: var(--font-work-sans) !important;
+}
+
+.font-parisienne {
+  font-family: var(--font-parisienne), cursive;
+}
+
+/* Additional Work Sans utility classes */
+.font-work-sans {
+  font-family: var(--font-work-sans);
+}
+
+/* Work Sans weight utilities */
+.font-work-light {
+  font-family: var(--font-work-sans);
+  font-weight: 300;
+}
+
+.font-work-normal {
+  font-family: var(--font-work-sans);
+  font-weight: 400;
+}
+
+.font-work-medium {
+  font-family: var(--font-work-sans);
+  font-weight: 500;
+}
+
+.font-work-semibold {
+  font-family: var(--font-work-sans);
+  font-weight: 600;
+}
+
+.font-work-bold {
+  font-family: var(--font-work-sans);
+  font-weight: 700;
+}
+
+.font-work-extrabold {
+  font-family: var(--font-work-sans);
+  font-weight: 800;
+}
+
+.font-work-black {
+  font-family: var(--font-work-sans);
+  font-weight: 900;
+}
