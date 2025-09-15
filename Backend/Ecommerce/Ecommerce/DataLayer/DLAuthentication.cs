@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using static ECOMAPP.MiddleWare.AppEnums;
-using static ECOMAPP.ModelLayer.MLAuthetication;
-using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
+using static ECOMAPP.ModelLayer.MLAuthentication;
+using static ECOMAPP.ModelLayer.MLAuthentication.AuthenticationDTO;
 
 namespace ECOMAPP.DataLayer
 {
@@ -276,30 +276,35 @@ namespace ECOMAPP.DataLayer
                     _Dataset = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
                 }
-                if(_Dataset !=null && _Dataset.Tables.Count>0){
-                _CountryStateCityRepository.CountryEntity=new List<_CountryStateCityRepository.CountryEntity>
-                foreach(DataRow row in _Dataset.Tables[0].Rows){
-                    _CountryStateCityRepository.CountryEntity.Add(new MlFormHelper.CountryEntity(){
-                        CountryId = row["Id"].ToString() ?? "",
-                        CountryName = row["CountryName"].ToString() ?? "",
-                        CountryEmoji = row["Emoji"].ToString() ?? ""
-                    })
-
-                }
-                 _CountryStateCityRepository.Code = 200;
-                 _CountryStateCityRepository.Message = "OK";
-                 _CountryStateCityRepository.Retval = "Success";
+                if (_Dataset != null && _Dataset.Tables.Count > 0)
+                {
+                    _CountryStateCityRepository.CountryEntities = new List<CountryStateCityRepository.CountryEntity>(); 
+                    foreach (DataRow row in _Dataset.Tables[0].Rows)
+                    {
+                        _CountryStateCityRepository.CountryEntities.Add(new CountryStateCityRepository.CountryEntity()
+                        {
+                            CountryId = row["Id"].ToString() ?? "",
+                            CountryName = row["CountryName"].ToString() ?? "",
+                            CountryEmoji = row["Emoji"].ToString() ?? ""
+                        });
+                    }
+                    _CountryStateCityRepository.Code = 200;
+                    _CountryStateCityRepository.Message = "OK";
+                    _CountryStateCityRepository.Retval = "Success";
                 }
             }
-            catch (Exception ex) { 
-                ErrorLog("GetAllCountryByCountry", "DLAuthentcation", ex.ToString());
+            catch (Exception ex)
+            {
+                ErrorLog("GetAllCountryByCountry", "DLAuthentication", ex.ToString());
                 _CountryStateCityRepository.Code = 400;
                 _CountryStateCityRepository.Message = ex.ToString();
                 _CountryStateCityRepository.Retval = "Failed";
             }
+            return _CountryStateCityRepository; 
         }
-        public CountryStateCityRepository GetAllStateByCountry()
-          {
+
+        public CountryStateCityRepository GetAllStateByCountry(string countryId)
+        {
             CountryStateCityRepository _CountryStateCityRepository = new();
             try
             {
@@ -307,64 +312,75 @@ namespace ECOMAPP.DataLayer
                 using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
-                    _DBAccess.AddParameters("@Action", "SelectCountries");
+                    _DBAccess.AddParameters("@Action", "SelectStates"); 
+                    _DBAccess.AddParameters("@CountryId", countryId); 
                     _Dataset = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
                 }
-                if(_Dataset !=null && _Dataset.Tables.Count>0){
-                _CountryStateCityRepository.StateEntity=new List<_CountryStateCityRepository.StateEntity>
-                foreach(DataRow row in _Dataset.Tables[0].Rows){
-                    _CountryStateCityRepository.StateEntity.Add(new MlFormHelper.StateEntity(){
-                       StateId = row["StateId"].ToString() ?? "",
-                       StateName = row["StateName"].ToString() ?? ""
-                    })
-
-                }
-                 _CountryStateCityRepository.Code = 200;
-                 _CountryStateCityRepository.Message = "OK";
-                 _CountryStateCityRepository.Retval = "Success";
+                if (_Dataset != null && _Dataset.Tables.Count > 0)
+                {
+                    _CountryStateCityRepository.StateEntities = new List<CountryStateCityRepository.StateEntity>();
+                    foreach (DataRow row in _Dataset.Tables[0].Rows)
+                    {
+                        _CountryStateCityRepository.StateEntities.Add(new CountryStateCityRepository.StateEntity() 
+                        {
+                            StateId = row["StateId"].ToString() ?? "",
+                            StateName = row["StateName"].ToString() ?? ""
+                        }); // Fixed: missing semicolon
+                    }
+                    _CountryStateCityRepository.Code = 200;
+                    _CountryStateCityRepository.Message = "OK";
+                    _CountryStateCityRepository.Retval = "Success";
                 }
             }
-            catch (Exception ex) { 
-                ErrorLog("GetAllStateByCountry", "DLAuthentcation", ex.ToString());
+            catch (Exception ex)
+            {
+                ErrorLog("GetAllStateByCountry", "DLAuthentication", ex.ToString()); 
                 _CountryStateCityRepository.Code = 400;
                 _CountryStateCityRepository.Message = ex.ToString();
                 _CountryStateCityRepository.Retval = "Failed";
             }
+            return _CountryStateCityRepository;
         }
-        
-        public CountryStateCityRepository GetAllCityByState(){
-             CountryStateCityRepository _CountryStateCityRepository = new();
-            try{
-                DataSet _Dataset=new();
-                using(BAccess _DBAccess=new()){
-                _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
-                _DBAccess.AddParameters("@Action", "SelectCity");
-                _Dataset = _DBAccess.DBExecute();
-                _DBAccess.Dispose();
+
+        public CountryStateCityRepository GetAllCityByState(string stateId)
+        {
+            CountryStateCityRepository _CountryStateCityRepository = new();
+            try
+            {
+                DataSet _Dataset = new();
+                using (DBAccess _DBAccess = new()) 
+                {
+                    _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
+                    _DBAccess.AddParameters("@Action", "SelectCity");
+                    _DBAccess.AddParameters("@StateId", stateId); 
+                    _Dataset = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
                 }
-                if(_Dataset !=null && _Dataset.Tables.count>1){
-                    _CountryStateCityRepository.CityEntity=new List<CountryStateCityRepository.CityEntity>();
-                     foreach (DataRow row in dataset.Tables[0].Rows){
-                        _CountryStateCityRepository.CityEntity.Add(new CountryStateCityRepository.CityEntity(){
-                            CityId = row["StateId"].ToString() ?? "",
-                            CityName = row["StateName"].ToString() ?? ""
-                        })
-                     }
-                      _CountryStateCityRepository.Code = 200;
-                      _CountryStateCityRepository.Message = "OK";
-                      _CountryStateCityRepository.Retval = "Success";
-
-
+                if (_Dataset != null && _Dataset.Tables.Count > 0) 
+                {
+                    _CountryStateCityRepository.CityEntities = new List<CountryStateCityRepository.CityEntity>();
+                    foreach (DataRow row in _Dataset.Tables[0].Rows)
+                    {
+                        _CountryStateCityRepository.CityEntities.Add(new CountryStateCityRepository.CityEntity()
+                        {
+                            CityId = row["CityId"].ToString() ?? "",
+                            CityName = row["CityName"].ToString() ?? "" 
+                        }); 
+                    }
+                    _CountryStateCityRepository.Code = 200;
+                    _CountryStateCityRepository.Message = "OK";
+                    _CountryStateCityRepository.Retval = "Success";
                 }
-
             }
-            catch(Exception ex){
-               ErrorLog("GetAllCityByState", "DLAuthenticaton", ex.ToString());
-               _CountryStateCityRepository.Code = 400;
-               _CountryStateCityRepository.Message = ex.ToString();
-               _CountryStateCityRepository.Retval = "Failed";
+            catch (Exception ex)
+            {
+                ErrorLog("GetAllCityByState", "DLAuthentication", ex.ToString());
+                _CountryStateCityRepository.Code = 400;
+                _CountryStateCityRepository.Message = ex.ToString();
+                _CountryStateCityRepository.Retval = "Failed";
             }
+            return _CountryStateCityRepository; 
         }
 
         public string GenerateRandomNumber()

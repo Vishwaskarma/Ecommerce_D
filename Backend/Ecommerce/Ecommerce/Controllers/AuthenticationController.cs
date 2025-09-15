@@ -1,5 +1,4 @@
-
-﻿using System.Data;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -10,14 +9,14 @@ using ECOMAPP.DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using static ECOMAPP.ModelLayer.MLAuthetication;
+using static ECOMAPP.ModelLayer.MLAuthentication;
 using static ECOMAPP.MiddleWare.AppEnums;
 using Microsoft.AspNetCore.Authorization;
-using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
+using static ECOMAPP.ModelLayer.MLAuthentication.AuthenticationDTO;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using static ECOMAPP.CommonRepository.DBHelper;
-
+using ECOMAPP.ModelLayer;
 
 namespace ECOMAPP.Controllers
 {
@@ -26,17 +25,15 @@ namespace ECOMAPP.Controllers
     public class AuthenticationController : Controller
     {
         public readonly DLAuthentication dlauth;
+        private readonly IConfiguration _configuration;
 
-        public AuthenticationController(DLAuthentication authentication)
+        public AuthenticationController(DLAuthentication authentication, IConfiguration configuration)
         {
-            dlauth = authentication
-
+            dlauth = authentication;
+            _configuration = configuration; 
         }
 
-
         DALBASE dalbase = new();
-
-
 
         [Route("Login")]
         [HttpPost]
@@ -45,14 +42,11 @@ namespace ECOMAPP.Controllers
             AuthenticationDTO result = new AuthenticationDTO();
             try
             {
-
                 result = dlauth.Login(loginRequest.EmailId ?? "", loginRequest.PhoneNumber ?? "", loginRequest.Password ?? "");
 
                 if (result.Code == 200)
                 {
-
-                    IConfiguration conf = (new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build());
-                    // private string DBConnectionString = conf["ConnectionStrings:DBCON"].ToString();
+                    IConfiguration conf = _configuration; 
 
                     if (conf != null)
                     {
@@ -61,13 +55,11 @@ namespace ECOMAPP.Controllers
                         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
                         if (result.AuthenticationsList != null && result.AuthenticationsList.Count > 0)
                         {
-
                             var claims = new[]
                             {
-
-                                new Claim("UserId", result.AuthenticationsList[0].UserId),
-                                new Claim("DesignationId",result.AuthenticationsList[0].DesignationId),
-                                new Claim("DesignationName",result.AuthenticationsList[0].DesignationName),
+                                new Claim("UserId", result.AuthenticationsList[0].UserId ?? ""),
+                                new Claim("DesignationId", result.AuthenticationsList[0].DesignationId ?? ""),
+                                new Claim("DesignationName", result.AuthenticationsList[0].DesignationName ?? ""),
                             };
 
                             var token = new JwtSecurityToken(
@@ -76,16 +68,11 @@ namespace ECOMAPP.Controllers
                                  signingCredentials: credentials
                             );
 
-
                             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
                             result.Token = tokenString;
-
                         }
                     }
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -94,15 +81,11 @@ namespace ECOMAPP.Controllers
                 result.Code = 500;
                 result.Message = "Internal Server Error";
                 result.Retval = "Failed";
-                result.AuthenticationsList = [];
-            };
+                result.AuthenticationsList = new List<AuthenticationEntites>();
+            }
 
             return Json(result);
-
-
         }
-
-
 
         [Route("Register")]
         [HttpPost]
@@ -116,27 +99,20 @@ namespace ECOMAPP.Controllers
 
                 if (result.Code == 200)
                 {
-
-                    JsonResult json = Json(JsonConvert.SerializeObject(result));
                     return Json(result);
-
                 }
                 else if (result.Code == 1005)
                 {
                     result.Code = 1005;
                     result.Message = DBEnums.Codes.ALREADY_EXISTS.ToString();
-                    JsonResult json = Json(JsonConvert.SerializeObject(result));
                     return Json(result);
                 }
                 else
                 {
                     result.Code = 400;
                     result.Message = "Failed to Register";
-                    JsonResult json = Json(JsonConvert.SerializeObject(result));
                     return Json(result);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -149,93 +125,61 @@ namespace ECOMAPP.Controllers
                 };
 
                 return Json(res);
-
             }
-
         }
 
-
-        public ActonResult<CountryStateCityRepository>GetAllCountryByCountry(){
-                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
-                DLAuthentication _DLAuthentication=new();
-            try{
-                _MLCountryStateCityRepository=_DLAuthentication.GetAllCountryByCountry();
-
-
+        [Route("GetAllCountryByCountry")] 
+        [HttpGet]
+        public ActionResult<CountryStateCityRepository> GetAllCountryByCountry() 
+        {
+            CountryStateCityRepository _CountryStateCityRepository = new(); 
+            try
+            {
+                _CountryStateCityRepository = dlauth.GetAllCountryByCountry(); 
             }
-            catch(Exception ex){
-                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
-                 _MLCountryStateCityRepository.Code = 500;
-                 _MLCountryStateCityRepository.Retval = "Error";
-
+            catch (Exception ex)
+            {
+                _CountryStateCityRepository.Message = "Error: " + ex.Message;
+                _CountryStateCityRepository.Code = 500;
+                _CountryStateCityRepository.Retval = "Error";
             }
-            return ok(CountryStateCityRepository)
-
+            return Ok(_CountryStateCityRepository); 
         }
 
-         public ActonResult<CountryStateCityRepository>GetAllStateByCountry(){
-                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
-                DLAuthentication _DLAuthentication=new();
-            try{
-                _MLCountryStateCityRepository=_DLAuthentication.GetAllStateByCountry();
-
-
+        [Route("GetAllStateByCountry/{countryId}")] 
+        [HttpGet]
+        public ActionResult<CountryStateCityRepository> GetAllStateByCountry(string countryId) 
+        {
+            CountryStateCityRepository _CountryStateCityRepository = new(); 
+            try
+            {
+                _CountryStateCityRepository = dlauth.GetAllStateByCountry(countryId); 
             }
-            catch(Exception ex){
-                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
-                 _MLCountryStateCityRepository.Code = 500;
-                 _MLCountryStateCityRepository.Retval = "Error";
-
+            catch (Exception ex)
+            {
+                _CountryStateCityRepository.Message = "Error: " + ex.Message;
+                _CountryStateCityRepository.Code = 500;
+                _CountryStateCityRepository.Retval = "Error";
             }
-            return ok(CountryStateCityRepository)
-
+            return Ok(_CountryStateCityRepository); 
         }
 
-       public ActonResult<CountryStateCityRepository>GetAllCityByState(){
-                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
-                DLAuthentication _DLAuthentication=new();
-            try{
-                _MLCountryStateCityRepository=_DLAuthentication.GetAllCityByState();
-
-
+        [Route("GetAllCityByState/{stateId}")] 
+        [HttpGet]
+        public ActionResult<CountryStateCityRepository> GetAllCityByState(string stateId) 
+        {
+            CountryStateCityRepository _CountryStateCityRepository = new(); 
+            try
+            {
+                _CountryStateCityRepository = dlauth.GetAllCityByState(stateId); 
             }
-            catch(Exception ex){
-                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
-                 _MLCountryStateCityRepository.Code = 500;
-                 _MLCountryStateCityRepository.Retval = "Error";
-
+            catch (Exception ex)
+            {
+                _CountryStateCityRepository.Message = "Error: " + ex.Message;
+                _CountryStateCityRepository.Code = 500;
+                _CountryStateCityRepository.Retval = "Error";
             }
-            return ok(CountryStateCityRepository)
-
+            return Ok(_CountryStateCityRepository); 
         }
-
-
-    
-
-
-
-
-
-
-
-
-
-   
-  
-
-
- 
-   
-
-
-
-
-
-
-
-     
-
-
-
     }
 }
