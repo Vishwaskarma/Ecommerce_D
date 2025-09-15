@@ -29,7 +29,7 @@ namespace ECOMAPP.Controllers
 
         public AuthenticationController(DLAuthentication authentication)
         {
-            dlauth = authentication;
+            dlauth = authentication
 
         }
 
@@ -154,6 +154,60 @@ namespace ECOMAPP.Controllers
 
         }
 
+
+        public ActonResult<CountryStateCityRepository>GetAllCountryByCountry(){
+                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
+                DLAuthentication _DLAuthentication=new();
+            try{
+                _MLCountryStateCityRepository=_DLAuthentication.GetAllCountryByCountry();
+
+
+            }
+            catch(Exception ex){
+                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
+                 _MLCountryStateCityRepository.Code = 500;
+                 _MLCountryStateCityRepository.Retval = "Error";
+
+            }
+            return ok(CountryStateCityRepository)
+
+        }
+
+         public ActonResult<CountryStateCityRepository>GetAllStateByCountry(){
+                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
+                DLAuthentication _DLAuthentication=new();
+            try{
+                _MLCountryStateCityRepository=_DLAuthentication.GetAllStateByCountry();
+
+
+            }
+            catch(Exception ex){
+                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
+                 _MLCountryStateCityRepository.Code = 500;
+                 _MLCountryStateCityRepository.Retval = "Error";
+
+            }
+            return ok(CountryStateCityRepository)
+
+        }
+
+       public ActonResult<CountryStateCityRepository>GetAllCityByState(){
+                MLCountryStateCityRepository _MLCountryStateCityRepository=new();
+                DLAuthentication _DLAuthentication=new();
+            try{
+                _MLCountryStateCityRepository=_DLAuthentication.GetAllCityByState();
+
+
+            }
+            catch(Exception ex){
+                 _MLCountryStateCityRepository.Message = "Error: " + ex.Message;
+                 _MLCountryStateCityRepository.Code = 500;
+                 _MLCountryStateCityRepository.Retval = "Error";
+
+            }
+            return ok(CountryStateCityRepository)
+
+        }
 
 
     

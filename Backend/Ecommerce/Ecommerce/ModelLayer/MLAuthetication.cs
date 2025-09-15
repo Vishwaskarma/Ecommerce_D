@@ -1,38 +1,29 @@
 ﻿namespace ECOMAPP.ModelLayer
 {
-
-
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-   
 
     namespace EcommerceAPI.DTO
     {
         public class EcommerceCategoryDTO
         {
-
             public int Code { get; set; }
             public string Message { get; set; }
             public string Retval { get; set; }
 
-
-
             public class Category
             {
-
                 public int Category_id { get; set; }
                 public string Category_Name { get; set; }
                 public string CreationDate { get; set; }
                 public string Image { get; set; }
                 public int Priority { get; set; }
                 public string Status { get; set; }
-
             }
-            
+
             public class DemoDto
             {
                 public class DemoDTOCHild
@@ -40,18 +31,13 @@
                     public string prop1 { get; set; }
                     public string prop2 { get; set; }
                     public string prop3 { get; set; }
-                    
-
                 }
             }
-            
+
             public List<EcommerceCategoryDTO.Category> CategoryList { get; set; }
             public List<EcommerceCategoryDTO.DemoDto.DemoDTOCHild> catList { get; set; }
-
-
         }
     }
-
 
     public class SellerDocument
     {
@@ -59,11 +45,9 @@
         public string? documentName { get; set; }
         public string? document { get; set; }
     }
-    
+
     public class MLAuthetication
     {
-
-
         public class RegistrationData
         {
             public string Firstname { get; set; } = string.Empty;
@@ -83,8 +67,6 @@
             public string? pincode1 { get; set; }
             public string? pincode2 { get; set; }
 
-
-
             public int? selectedAddressIndex { get; set; }
 
             public string? SellerPackage { get; set; }
@@ -103,10 +85,7 @@
             public string? SellerDocument { get; set; }
             public Dictionary<string, string>? SellerDocuments { get; set; }
             public bool? isApproved { get; set; }
-
-
         }
-
 
         public class User
         {
@@ -116,9 +95,6 @@
             public string StateId { get; set; } = string.Empty;
             public string CityId { get; set; } = string.Empty;
             public string CountryId { get; set; } = string.Empty;
-
-
-
         }
 
         public class UpdateUserProfile
@@ -127,16 +103,13 @@
 
             public string LastName { get; set; } = string.Empty;
             public string ProfilePath { get; set; } = string.Empty;
-            
         }
 
         public class MlLoginRequest
         {
-
-            public string? EmailId { get; set; } 
+            public string? EmailId { get; set; }
             public string? PhoneNumber { get; set; }
             public string? Password { get; set; }
-        
         }
 
         public class MlForgetPasswordOtpValidate
@@ -155,19 +128,17 @@
         public class MlVerifyPhone
         {
             public string? PhoneNumber { get; set; }
-                
-            public string? Otp { get; set; }
 
+            public string? Otp { get; set; }
         }
 
         public class MLGetAllUser
         {
-           public string PageNumber { get; set; }
+            public string PageNumber { get; set; }
 
             public string? SearchText { get; set; }
 
             public string? Designation { get; set; }
-
         }
 
         public class MlSendOtpEmail
@@ -177,7 +148,6 @@
 
         public class AuthenticationDTO
         {
-
             public int? Code { get; set; }
             public string? Message { get; set; } = null;
             public string? Retval { get; set; } = null;
@@ -186,7 +156,6 @@
 
             public class AuthenticationEntites
             {
-
                 public string? Desgination { get; set; } = null;
                 public string? DesignationName { get; set; } = null;
                 public string? DesignationId { get; set; } = null;
@@ -196,8 +165,6 @@
                 public string? Status { get; set; } = null;
                 public string? Email { get; set; } = null;
                 public string? PhoneNumber { get; set; } = null;
-
-
             }
 
             public class UserProfileEntites
@@ -221,8 +188,6 @@
                 public string? Address_Two { get; set; }
                 public string? Address_Three { get; set; }
                 public string? Address_Four { get; set; }
-  
-                
 
                 public string? pincode { get; set; }
                 public string? pincode1 { get; set; }
@@ -238,8 +203,8 @@
                 public string? sellerType { get; set; }
                 public string? shopAbout { get; set; }
                 public string? shopLogo { get; set; }
-                public bool? paymentStatus { get; set;}
-                public string? Amount { get; set; } 
+                public bool? paymentStatus { get; set; }
+                public string? Amount { get; set; }
                 public bool? isApproved { get; set; }
                 public string? UserId { get; set; }
 
@@ -249,16 +214,13 @@
             public class UpdateAddressIndex
             {
                 public int? SelectedIndex { get; set; }
-
             }
-
 
             public class AddNewAddressPincode
             {
                 public string Address { get; set; } = string.Empty;
                 public string Pincode { get; set; } = string.Empty;
                 public int SelectedAddressBlock { get; set; }
-
             }
 
             public class EditaddressPincode
@@ -266,28 +228,26 @@
                 public int? SelectedIndex { get; set; }
                 public string Address { get; set; } = string.Empty;
                 public string Pincode { get; set; } = string.Empty;
-
             }
 
             public class GetFCM
             {
                 public string FCMToken { get; set; }
             }
+
             public class INSERTSHIPMENTADDRESS
             {
-                public string Action {get;set;} 
-                public string? UserId {get;set;} 
-                public string? alias {get;set;} 
-                public string? phone {get;set;} 
-                public string? address_line1 {get;set;} 
-                public string? address_line2 {get;set;} // = 'warchi wadi Park',
-                public int? pincode {get;set;} 
-                public int? city {get;set;} 
-                public int? state {get;set;} 
+                public string Action { get; set; }
+                public string? UserId { get; set; }
+                public string? alias { get; set; }
+                public string? phone { get; set; }
+                public string? address_line1 { get; set; }
+                public string? address_line2 { get; set; } // = 'warchi wadi Park',
+                public int? pincode { get; set; }
+                public int? city { get; set; }
+                public int? state { get; set; }
                 public int? country { get; set; }
                 public int? addressBlockId { get; set; }
-
-
             }
 
             public class ShipmentAddressEntites
@@ -310,14 +270,11 @@
                 public DateTime? UpdationDate { get; set; }
             }
 
-            public List<ShipmentAddressEntites>? shipmentAddressEntites { get; set; } 
-
+            public List<ShipmentAddressEntites>? shipmentAddressEntites { get; set; }
 
             public List<AuthenticationDTO.UserProfileEntites>? UserProfilesEntity { get; set; }
             public List<AuthenticationDTO.AuthenticationEntites>? AuthenticationsList { get; set; }
-
         }
-
 
         public class MlSeller
         {
@@ -341,10 +298,40 @@
             public string DocumnetType { get; set; }
             public string SellerDocument { get; set; }
             public bool? isApproved { get; set; }
+        }
+    }
 
+    public class CountryStateCityRepository
+    {
+        public class CountryEntity
+        {
+            public string CountryId { get; set; } = string.Empty;
+            public string CountryName { get; set; } = string.Empty;
 
+            public string CountryEmoji { get; set; } = string.Empty;
         }
 
+        public class StateEntity
+        {
+            public string StateId { get; set; } = string.Empty;
+            public string StateName { get; set; } = string.Empty;
+        }
 
+        public class CityEntity
+        {
+            public string CityId { get; set; } = string.Empty;
+            public string CityName { get; set; } = string.Empty;
+        }
+
+        public class MlFormData
+        {
+            public string CountryId { get; set; } = string.Empty;
+            public string StateId { get; set; } = string.Empty;
+            public string CityId { get; set; } = string.Empty;
+        }
+
+        public List<MlFormHelper.CountryEntity> CountryEntities { get; set; } = [];
+        public List<MlFormHelper.StateEntity> StateEntities { get; set; } = [];
+        public List<MlFormHelper.CityEntity> CityEntities { get; set; } = [];
     }
 }

@@ -77,3 +77,4 @@ F:\Ecommerec_D\Backend\Ecommerce\Ecommerce\obj\Debug\net8.0\refint\Ecommerce.dll
 F:\Ecommerec_D\Backend\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.pdb
 F:\Ecommerec_D\Backend\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.genruntimeconfig.cache
 F:\Ecommerec_D\Backend\Ecommerce\Ecommerce\obj\Debug\net8.0\ref\Ecommerce.dll
+F:\Ecommerec_D\Backend\Ecommerce\Ecommerce\obj\Debug\net8.0\Ecommerce.sourcelink.json

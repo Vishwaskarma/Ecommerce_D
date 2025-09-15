@@ -1,51 +1,46 @@
-﻿using static ECOMAPP.ModelLayer.MLAuthetication;
-using System.Data;
-using ECOMAPP.ModelLayer;
-using ECOMAPP.CommonRepository;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
-using ECOMAPP.ModelLayer.EcommerceAPI.DTO;
+﻿using System.Data;
 using System.Diagnostics;
-using Azure.Core;
-using static ECOMAPP.MiddleWare.AppEnums;
-using System.IdentityModel.Tokens.Jwt;
-using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
 using System.Diagnostics.Metrics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Numerics;
-
-using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
-
-using Microsoft.Extensions.Caching.Memory;
 using System.Transactions;
+using Azure.Core;
+using ECOMAPP.CommonRepository;
+using ECOMAPP.ModelLayer;
+using ECOMAPP.ModelLayer.EcommerceAPI.DTO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using static ECOMAPP.MiddleWare.AppEnums;
+using static ECOMAPP.ModelLayer.MLAuthetication;
+using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
 
 namespace ECOMAPP.DataLayer
 {
     public class DLAuthentication : DALBASE
     {
-
-
         private IConfiguration _configuration;
-
-
 
         public DLAuthentication(IConfiguration configuration)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-
+            _configuration =
+                configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-
-   
         public AuthenticationDTO Login(string EmailId, string PhoneNumber, string Password)
         {
-
             AuthenticationDTO authenticationDTO = new();
-            authenticationDTO.AuthenticationsList = new List<AuthenticationDTO.AuthenticationEntites>();
+            authenticationDTO.AuthenticationsList =
+                new List<AuthenticationDTO.AuthenticationEntites>();
             try
             {
                 DataSet dataSet = new DataSet();
-                if ((string.IsNullOrEmpty(PhoneNumber) || PhoneNumber == "") && !string.IsNullOrEmpty(EmailId))
+                if (
+                    (string.IsNullOrEmpty(PhoneNumber) || PhoneNumber == "")
+                    && !string.IsNullOrEmpty(EmailId)
+                )
                 {
                     using (DBAccess Db = new DBAccess())
                     {
@@ -56,8 +51,11 @@ namespace ECOMAPP.DataLayer
                         dataSet = Db.DBExecute();
                         Db.Dispose();
                     }
-
-                } else if ((string.IsNullOrEmpty(EmailId) || EmailId == "") && !string.IsNullOrEmpty(PhoneNumber))
+                }
+                else if (
+                    (string.IsNullOrEmpty(EmailId) || EmailId == "")
+                    && !string.IsNullOrEmpty(PhoneNumber)
+                )
                 {
                     using (DBAccess Db = new DBAccess())
                     {
@@ -68,9 +66,9 @@ namespace ECOMAPP.DataLayer
                         dataSet = Db.DBExecute();
                         Db.Dispose();
                     }
-                } else if (!string.IsNullOrEmpty(EmailId) && !string.IsNullOrEmpty(PhoneNumber))
+                }
+                else if (!string.IsNullOrEmpty(EmailId) && !string.IsNullOrEmpty(PhoneNumber))
                 {
-
                     using (DBAccess Db = new DBAccess())
                     {
                         Db.DBProcedureName = "SP_REGISTRATION";
@@ -80,7 +78,6 @@ namespace ECOMAPP.DataLayer
                         dataSet = Db.DBExecute();
                         Db.Dispose();
                     }
-
                 }
                 else
                 {
@@ -113,9 +110,14 @@ namespace ECOMAPP.DataLayer
                                     UserId = Convert.ToString(row["UserId"]),
                                     FirstName = Convert.ToString(row["FirstName"]),
                                     LastName = Convert.ToString(row["Lastname"]),
-                                    Email = row["Email"] == DBNull.Value ? null : Convert.ToString(row["Email"]),
-                                    PhoneNumber = row["PhoneNumber"] == DBNull.Value ? null : Convert.ToString(row["PhoneNumber"])
-
+                                    Email =
+                                        row["Email"] == DBNull.Value
+                                            ? null
+                                            : Convert.ToString(row["Email"]),
+                                    PhoneNumber =
+                                        row["PhoneNumber"] == DBNull.Value
+                                            ? null
+                                            : Convert.ToString(row["PhoneNumber"]),
                                 }
                             );
                             authenticationDTO.Code = 200;
@@ -130,7 +132,6 @@ namespace ECOMAPP.DataLayer
                     authenticationDTO.Message = "User Not Exists";
                     authenticationDTO.Retval = "Failed";
                 }
-
             }
             catch (Exception ex)
             {
@@ -138,25 +139,18 @@ namespace ECOMAPP.DataLayer
                 authenticationDTO.Code = 400;
                 authenticationDTO.Message = "User Not Exists";
                 authenticationDTO.Retval = "Failed";
-
-
             }
             return authenticationDTO;
         }
 
-
-
         public async Task<AuthenticationDTO> Register(RegistrationData rdata)
         {
-
             AuthenticationDTO authenticationDTO = new();
 
-            authenticationDTO.AuthenticationsList = new List<AuthenticationDTO.AuthenticationEntites>();
-
+            authenticationDTO.AuthenticationsList =
+                new List<AuthenticationDTO.AuthenticationEntites>();
 
             var property = rdata.GetType().GetProperties();
-
-
 
             foreach (var data in property)
             {
@@ -180,13 +174,8 @@ namespace ECOMAPP.DataLayer
                 }
             }
 
-
-
             try
             {
-
-
-
                 DataSet ret = new();
                 using (DBAccess Db = new())
                 {
@@ -209,7 +198,6 @@ namespace ECOMAPP.DataLayer
 
                     ret = Db.DBExecute();
                     Db.Dispose();
-
                 }
 
                 if (ret != null && ret.Tables.Count > 0)
@@ -229,23 +217,19 @@ namespace ECOMAPP.DataLayer
                             {
                                 var address = new
                                 {
-
                                     alias = ret.Tables[1].Rows[0]["alias"]?.ToString() ?? "",
                                     phone = Convert.ToInt64(ret.Tables[1].Rows[0]["phone"]),
-                                    address_line1 = ret.Tables[1].Rows[0]["address_line1"]?.ToString() ?? "",
+                                    address_line1 = ret.Tables[1]
+                                        .Rows[0]["address_line1"]
+                                        ?.ToString()
+                                    ?? "",
                                     pincode = Convert.ToInt64(ret.Tables[1].Rows[0]["pincode"]),
                                     city = ret.Tables[1].Rows[0]["CityName"]?.ToString() ?? "",
                                     state = ret.Tables[1].Rows[0]["StateName"]?.ToString() ?? "",
-                                    country = ret.Tables[1].Rows[0]["CountryName"]?.ToString() ?? "",
-
+                                    country = ret.Tables[1].Rows[0]["CountryName"]?.ToString()
+                                    ?? "",
                                 };
-
-
-
-
                             }
-
-
                         }
                         else if (retval == "EmailExists")
                         {
@@ -258,10 +242,8 @@ namespace ECOMAPP.DataLayer
                             authenticationDTO.Code = (int)DBEnums.Codes.ALREADY_EXISTS;
                             authenticationDTO.Message = DBEnums.Status.FAILURE.ToString();
                             authenticationDTO.Retval = DBEnums.Status.FAILURE.ToString();
-
                         }
                     }
-
                 }
                 else
                 {
@@ -269,7 +251,6 @@ namespace ECOMAPP.DataLayer
                     authenticationDTO.Retval = "FailedToRegister";
                     authenticationDTO.Code = 400;
                 }
-
             }
             catch (Exception ex)
             {
@@ -279,25 +260,112 @@ namespace ECOMAPP.DataLayer
                 ErrorLog("register,", "Authentication", ex.ToString());
             }
 
-
             return authenticationDTO;
         }
 
+        public CountryStateCityRepository GetAllCountryByCountry()
+        {
+            CountryStateCityRepository _CountryStateCityRepository = new();
+            try
+            {
+                DataSet _Dataset = new();
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
+                    _DBAccess.AddParameters("@Action", "SelectCountries");
+                    _Dataset = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+                }
+                if(_Dataset !=null && _Dataset.Tables.Count>0){
+                _CountryStateCityRepository.CountryEntity=new List<_CountryStateCityRepository.CountryEntity>
+                foreach(DataRow row in _Dataset.Tables[0].Rows){
+                    _CountryStateCityRepository.CountryEntity.Add(new MlFormHelper.CountryEntity(){
+                        CountryId = row["Id"].ToString() ?? "",
+                        CountryName = row["CountryName"].ToString() ?? "",
+                        CountryEmoji = row["Emoji"].ToString() ?? ""
+                    })
+
+                }
+                 _CountryStateCityRepository.Code = 200;
+                 _CountryStateCityRepository.Message = "OK";
+                 _CountryStateCityRepository.Retval = "Success";
+                }
+            }
+            catch (Exception ex) { 
+                ErrorLog("GetAllCountryByCountry", "DLAuthentcation", ex.ToString());
+                _CountryStateCityRepository.Code = 400;
+                _CountryStateCityRepository.Message = ex.ToString();
+                _CountryStateCityRepository.Retval = "Failed";
+            }
+        }
+        public CountryStateCityRepository GetAllStateByCountry()
+          {
+            CountryStateCityRepository _CountryStateCityRepository = new();
+            try
+            {
+                DataSet _Dataset = new();
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
+                    _DBAccess.AddParameters("@Action", "SelectCountries");
+                    _Dataset = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+                }
+                if(_Dataset !=null && _Dataset.Tables.Count>0){
+                _CountryStateCityRepository.StateEntity=new List<_CountryStateCityRepository.StateEntity>
+                foreach(DataRow row in _Dataset.Tables[0].Rows){
+                    _CountryStateCityRepository.StateEntity.Add(new MlFormHelper.StateEntity(){
+                       StateId = row["StateId"].ToString() ?? "",
+                       StateName = row["StateName"].ToString() ?? ""
+                    })
+
+                }
+                 _CountryStateCityRepository.Code = 200;
+                 _CountryStateCityRepository.Message = "OK";
+                 _CountryStateCityRepository.Retval = "Success";
+                }
+            }
+            catch (Exception ex) { 
+                ErrorLog("GetAllStateByCountry", "DLAuthentcation", ex.ToString());
+                _CountryStateCityRepository.Code = 400;
+                _CountryStateCityRepository.Message = ex.ToString();
+                _CountryStateCityRepository.Retval = "Failed";
+            }
+        }
+        
+        public CountryStateCityRepository GetAllCityByState(){
+             CountryStateCityRepository _CountryStateCityRepository = new();
+            try{
+                DataSet _Dataset=new();
+                using(BAccess _DBAccess=new()){
+                _DBAccess.DBProcedureName = "[SP_TblCountriesCityState]";
+                _DBAccess.AddParameters("@Action", "SelectCity");
+                _Dataset = _DBAccess.DBExecute();
+                _DBAccess.Dispose();
+                }
+                if(_Dataset !=null && _Dataset.Tables.count>1){
+                    _CountryStateCityRepository.CityEntity=new List<CountryStateCityRepository.CityEntity>();
+                     foreach (DataRow row in dataset.Tables[0].Rows){
+                        _CountryStateCityRepository.CityEntity.Add(new CountryStateCityRepository.CityEntity(){
+                            CityId = row["StateId"].ToString() ?? "",
+                            CityName = row["StateName"].ToString() ?? ""
+                        })
+                     }
+                      _CountryStateCityRepository.Code = 200;
+                      _CountryStateCityRepository.Message = "OK";
+                      _CountryStateCityRepository.Retval = "Success";
 
 
+                }
 
-
-
-
-
-
-
-
-
-
-
-
-
+            }
+            catch(Exception ex){
+               ErrorLog("GetAllCityByState", "DLAuthenticaton", ex.ToString());
+               _CountryStateCityRepository.Code = 400;
+               _CountryStateCityRepository.Message = ex.ToString();
+               _CountryStateCityRepository.Retval = "Failed";
+            }
+        }
 
         public string GenerateRandomNumber()
         {
@@ -305,7 +373,5 @@ namespace ECOMAPP.DataLayer
             int number = random.Next(1000, 10000);
             return number.ToString();
         }
-
     }
-
 }
